@@ -3,25 +3,26 @@
 <head>
   <meta charset="utf-8">
   <title>Регистрация</title>
+  <link rel="stylesheet" href="css.css"/>
 </head>
 <body >
-<header>
-  <a href="#">Главная</a>
-  <a href="authorization">Авторизация</a>
-  <a href="registration">Регистрация</a>
-</header>
-<div>
-  <article>
-    <form>
-      <label>Логин:</label><br>
-      <input type="text" name="login"><br><br>
-      <label>Пароль:</label><br>
-      <input type="password" name="password"><br><br>
-      <label>Повторите пароль:</label><br>
-      <input type="password" name="passwordRepeat"><br><br>
-      <button type="submit">Зарегистрироваться</button>
-    </form>
-  </article>
-</div>
+<nav>
+  <ul class="nav-links">
+    <li><a href="#">Главная</a></li>
+    <li><a href="authorization">Авторизация</a></li>
+    <li><a href="registration">Регистрация</a></li>
+  </ul>
+</nav>
+<article>
+  <form action="/registration" method="post">
+    <label>Логин:</label><br>
+    <input type="text" name="login"><br><br>
+    <label>Пароль:</label><br>
+    <input type="password" name="password"><br><br>
+    <label>Повторите пароль:</label><br>
+    <input type="password" name="passwordSecond"><br><br>
+    <button type="submit">Зарегистрироваться</button>
+  </form>
+</article>
 </body>
 </html>
