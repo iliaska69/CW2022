@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Hello World!</title>
+</head>
+<body>
+<nav>
+    <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</nav>
+<article>
+    <form action="/addTender" method="post">
+        <label>Название тендера:</label><br>
+        <input type="text" name="name"><br><br>
+        <label>Описание тендера:</label><br>
+        <textarea name="description"></textarea>
+        <label>Длительность тендера:</label><br>
+        <input type="number" name="term"><br><br>
+        <label>Стоимость:</label><br>
+        <input type="number" name="price"><br><br>
+        <button type="submit">Добавить тендер</button>
+    </form>
+</article>
+</body>
+</html>
