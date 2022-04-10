@@ -4,6 +4,7 @@
 <head>
     <title>Tender.by</title>
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/templatemo-edu-meeting.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/tenderList.css}" />
 </head>
 <body>
 <header class="header-area header-sticky">
@@ -26,15 +27,30 @@
     </div>
 </header>
 <body>
-<article>
-    <div th:each="el:${tenders}">
-        <h1>Название:</h1>
-        <h1 th:text="${el.name}"/>
-        <h1>Срок:</h1>
-        <h1 th:text="${el.term}"/>
-        <h1>Цена:</h1>
-        <h1 th:text="${el.price}"/>
-    </div>
-</article>
+<div class="showTender" th:each="el:${tenders}">
+    <form  method="post" class="form">
+        <div class="form-group">
+            <label class="form-label">Идентификатор: </label>
+            <label class="form-info" th:text="${el.id}"></label>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Название тендера: </label>
+            <label class="form-info" th:text="${el.name}"></label>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Описание тендера: </label>
+            <label class="form-info" th:text="${el.description}"></label>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Длительность тендера (деней): </label>
+            <label class="form-info" th:text="${el.term}"></label>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Стоимость тендера (Бел. руб): </label>
+            <label class="form-info" th:text="${el.price}"></label>
+        </div>
+        <button type="submit" class="form-button">Подробнее</button>
+    </form>
+</div>
 </body>
 </html>
