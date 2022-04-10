@@ -4,6 +4,7 @@
 <head>
     <title>Tender.by</title>
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/templatemo-edu-meeting.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/addTender.css}" />
 </head>
 <body>
 <header class="header-area header-sticky">
@@ -18,7 +19,7 @@
                         <li><a href="#top" class="active">Главная</a></li>
                         <li><a href="/home">Тендеры</a></li>
                         <li><a href="/addTender">Добавить тендер</a></li>
-                        <li><a href="/login">Аккаунт</a></li>
+                        <li><a href="/account">Аккаунт</a></li>
                     </ul>
                 </nav>
             </div>
@@ -26,24 +27,37 @@
     </div>
 </header>
 <body>
+<!-- любой текст
 <nav>
     <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Sign Out"/>
     </form>
 </nav>
-<article>
-    <form action="/addTender" method="post">
-        <label>Название тендера:</label><br>
-        <input type="text" name="name"><br><br>
-        <label>Описание тендера:</label><br>
-        <textarea name="description"></textarea>
-        <label>Длительность тендера:</label><br>
-        <input type="number" name="term"><br><br>
-        <label>Стоимость:</label><br>
-        <input type="number" name="price"><br><br>
-        <button type="submit">Добавить тендер</button>
-    </form>
-</article>
+-->
+<div class="main-page">
+    <div class="addTender">
+        <form action="/addTender" method="post" class="form">
+            <h1 class="form-title">Добавление тендера</h1>
+            <div class="form-group">
+                <input type="text" name="name" class="form-input" placeholder=" ">
+                <label class="form-label">Название тендера</label>
+            </div>
+            <div class="form-group">
+                <textarea name="description" class="form-input" placeholder=" "></textarea>
+                <label class="form-label">Описание тендера</label>
+            </div>
+            <div class="form-group">
+                <input type="number" name="term" class="form-input" placeholder=" " min="1">
+                <label class="form-label">Длительность тендера (дней)</label>
+            </div>
+            <div class="form-group">
+                <input type="number" name="price" class="form-input" placeholder=" " min="1">
+                <label class="form-label">Стоимость (бел. руб)</label>
+            </div>
+            <button type="submit" class="form-button">Добавить тендер</button>
+        </form>
+    </div>
+</div>
 </body>
 </html>
