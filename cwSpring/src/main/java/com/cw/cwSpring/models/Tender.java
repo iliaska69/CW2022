@@ -10,6 +10,7 @@ public class Tender {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    private Integer userID;
     private String name;
     private String description;
     private Integer term;
@@ -18,12 +19,17 @@ public class Tender {
     public Tender() {
     }
 
-    public Tender(String name, String description,Integer term,Integer price) {
+    public Tender(String name, String description,Integer term,Integer price, Integer userID) {
         this.name = name;
+        this.userID = userID;
         this.description = description;
         this.term = term;
         this.price = price;
     }
+
+    public Integer getUserID() {return userID;}
+
+    public void setUserID(Integer userID) {this.userID = userID;}
 
     public Integer getId() {
         return id;

@@ -10,17 +10,22 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String login;
+    private String username;
     private String password;
+    private String role;
     private Boolean isTrust = false;
 
     public User() {
     }
 
-    public User(String login, String password) {
-        this.login = login;
+    public User(String username, String password) {
+        this.username = username;
         this.password = password;
     }
+
+    public String getRole() {return role;}
+
+    public void setRole(String role) {this.role = role;}
 
     public Integer getId() {
         return id;
@@ -30,12 +35,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -52,5 +57,16 @@ public class User {
 
     public void setTrust(Boolean trust) {
         isTrust = trust;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role='" + role + '\'' +
+                ", isTrust=" + isTrust +
+                '}';
     }
 }
