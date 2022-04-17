@@ -27,7 +27,7 @@
     </div>
 </header>
 <body>
-<div class="showTender" th:each="el:${tender}">
+<div class="showTender" th:each="el:${tenders}">
     <form  method="post" class="form">
         <div class="form-group">
             <label class="form-label">Идентификатор: </label>
@@ -49,42 +49,7 @@
             <label class="form-label">Стоимость тендера (Бел. руб): </label>
             <label class="form-info" th:text="${el.price}"></label>
         </div>
-        <table>
-            <tr>
-                <td>Индентификатор</td>
-                <td>Описание</td>
-                <td>Цена</td>
-                <td>Срок</td>
-            </tr>
-            <div th:each="els:${members}">
-                <tr>
-                    <td th:text="${els.userID}"></td>
-                    <td th:text="${els.offerDescription}"></td>
-                    <td th:text="${els.offerPrice}"></td>
-                    <td th:text="${els.term}"></td>
-                </tr>
-            </div>
-        </table>
-    </form>
-    <form  method="post" class="form" th:action="@{/takePart}">
-        <h1 class="form-title">Принять участие в тендере</h1>
-        <div class="form-group">
-            <input type="text" name="TenderID" class="form-input" placeholder=" " th:value="${el.id}" readonly="readonly">
-            <label class="form-label">Идентификатор тендера</label>
-        </div>
-        <div class="form-group">
-            <input type="text" name="description" class="form-input" placeholder=" ">
-            <label class="form-label">Описание вашего предложения</label>
-        </div>
-        <div class="form-group">
-            <input type="number" name="price" class="form-input" placeholder=" ">
-            <label class="form-label">Цена предложения</label>
-        </div>
-        <div class="form-group">
-            <input type="number" name="term" class="form-input" placeholder=" ">
-            <label class="form-label">Срок выполнения</label>
-        </div>
-        <button type="submit" class="form-button">Участвовать</button>
+        <a class="form-button" th:href="'/myTenders/'+${el.id}">Подробнее</a>
     </form>
 </div>
 </body>

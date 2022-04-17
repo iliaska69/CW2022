@@ -2,8 +2,10 @@ package com.cw.cwSpring.Controllers;
 
 import com.cw.cwSpring.Services.CustomUserDetails;
 import com.cw.cwSpring.Services.CustomUserDetailsService;
+import com.cw.cwSpring.models.Member;
 import com.cw.cwSpring.models.Tender;
 import com.cw.cwSpring.models.User;
+import com.cw.cwSpring.repo.MemberRepository;
 import com.cw.cwSpring.repo.TenderRepository;
 import com.cw.cwSpring.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class MainController {
     UserRepository userRepository;
     @Autowired
     TenderRepository tenderRepository;
+    @Autowired
+    MemberRepository memberRepository;
 
     @GetMapping("/login")
     public String authorization(Model model) {
@@ -35,6 +39,8 @@ public class MainController {
         Optional<Tender> tender = tenderRepository.findById(TenderId);
         ArrayList<Tender> tenderArray = new ArrayList<>();
         tender.ifPresent(tenderArray::add);
+        Iterable<Member> members = memberRepository.findMembersByTenderID(TenderId);
+        model.addAttribute("members",members);
         model.addAttribute("tender",tenderArray);
         return "home-details";
     }
@@ -65,7 +71,7 @@ public class MainController {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Tender tender = new Tender(name,description,term,price,user.getID());
         tenderRepository.save(tender);
-        return "addTender";
+        return "redirect:/myTenders";
     }
     @GetMapping("/home")
     public String loadHomePage(Model model) {
@@ -78,6 +84,28 @@ public class MainController {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Iterable<Tender> tenders = tenderRepository.findTendersByUserID(user.getID());
         model.addAttribute("tenders",tenders);
-        return "home";
+        return "myTenders";
+    }
+    @GetMapping("/myTenders/{TenderId}")
+    public String myTenderDetails(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
+        Optional<Tender> tender = tenderRepository.findById(TenderId);
+        ArrayList<Tender> tenderArray = new ArrayList<>();
+        tender.ifPresent(tenderArray::add);
+        Iterable<Member> members = memberRepository.findMembersByTenderID(TenderId);
+        model.addAttribute("members",members);
+        model.addAttribute("tender",tenderArray);
+        return "myTenders-details";
+    }
+    @GetMapping("/myTenders/remove/{TenderId}")
+    public String removeMyTender(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
+        tenderRepository.deleteById(TenderId);
+        return "redirect:/myTenders";
+    }
+    @PostMapping("/takePart")
+    public String addMember(@RequestParam Integer TenderID, @RequestParam String description,@RequestParam Integer term,@RequestParam Integer price,Model model) {
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member member = new Member(user.getID(),TenderID,description,price,term);
+        memberRepository.save(member);
+        return "redirect:/home";
     }
 }

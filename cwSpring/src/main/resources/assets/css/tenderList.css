@@ -5,6 +5,13 @@
     height: 40vh;
 
 }
+table, th, td{
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+}
+table{
+    width: 100%;
+}
 .form{
     width: 1000px;
     padding: 32px;
