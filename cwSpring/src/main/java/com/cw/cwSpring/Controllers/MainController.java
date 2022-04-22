@@ -5,9 +5,11 @@ import com.cw.cwSpring.Services.CustomUserDetailsService;
 import com.cw.cwSpring.models.Member;
 import com.cw.cwSpring.models.Tender;
 import com.cw.cwSpring.models.User;
+import com.cw.cwSpring.models.Winner;
 import com.cw.cwSpring.repo.MemberRepository;
 import com.cw.cwSpring.repo.TenderRepository;
 import com.cw.cwSpring.repo.UserRepository;
+import com.cw.cwSpring.repo.WinnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,6 +30,8 @@ public class MainController {
     TenderRepository tenderRepository;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    WinnerRepository winnerRepository;
 
     @GetMapping("/login")
     public String authorization(Model model) {
@@ -75,14 +79,36 @@ public class MainController {
     }
     @GetMapping("/home")
     public String loadHomePage(Model model) {
-        Iterable<Tender> tenders = tenderRepository.findAll();
+        Iterable<Tender> tenders = tenderRepository.findTendersByIsActive(true);
         model.addAttribute("tenders",tenders);
         return "home";
+    }
+    @GetMapping("/myFinish")
+    public String myFinishPage(Model model) {
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Iterable<Tender> tenders = tenderRepository.findTendersByUserIDAndIsActive(user.getID(),false);
+        model.addAttribute("tenders",tenders);
+        return "myFinish";
+    }
+    @GetMapping("/myFinish/{TenderId}")
+    public String myFinishDetails(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
+        Optional<Tender> tender = tenderRepository.findById(TenderId);
+        ArrayList<Tender> tenderArray = new ArrayList<>();
+        tender.ifPresent(tenderArray::add);
+        Iterable<Member> members = memberRepository.findMembersByTenderID(TenderId);
+        model.addAttribute("members",members);
+        model.addAttribute("tender",tenderArray);
+        return "myFinish-details";
+    }
+    @GetMapping("/myOffers")
+    public String loadMyOffers(Model model) {
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return "myOffers";
     }
     @GetMapping("/myTenders")
     public String loadMyTendersPage(Model model) {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Iterable<Tender> tenders = tenderRepository.findTendersByUserID(user.getID());
+        Iterable<Tender> tenders = tenderRepository.findTendersByUserIDAndIsActive(user.getID(),true);
         model.addAttribute("tenders",tenders);
         return "myTenders";
     }
@@ -104,8 +130,33 @@ public class MainController {
     @PostMapping("/takePart")
     public String addMember(@RequestParam Integer TenderID, @RequestParam String description,@RequestParam Integer term,@RequestParam Integer price,Model model) {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Member member = new Member(user.getID(),TenderID,description,price,term);
-        memberRepository.save(member);
+        if(memberRepository.findMembersByTenderIDAndUserID(TenderID,user.getID()).size() == 0) {
+            Member member = new Member(user.getID(),TenderID,description,price,term);
+            memberRepository.save(member);
+        }
         return "redirect:/home";
+    }
+    @GetMapping("/myTenders/finish/{TenderId}")
+    public String finishMyTender(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
+        Tender tender = tenderRepository.findTenderById(TenderId);
+        tender.setActive(false);
+        tenderRepository.save(tender);
+        Iterable<Member> members = memberRepository.findMembersByTenderID(TenderId);
+        Member bestMember = new Member();
+        for(Member item : members)
+        {
+            if(bestMember.getOfferPrice() != null) {
+                if(bestMember.getOfferPrice() > item.getOfferPrice()) {
+                    bestMember = item;
+                }
+            }
+            else {
+                bestMember = item;
+            }
+        }
+        Winner winner = new Winner();
+        winner.setMemberID(bestMember.getId());
+        winnerRepository.save(winner);
+        return "redirect:/myTenders";
     }
 }

@@ -15,6 +15,7 @@ public class Tender {
     private String description;
     private Integer term;
     private Integer price;
+    private Boolean isActive;
 
     public Tender() {
     }
@@ -25,7 +26,12 @@ public class Tender {
         this.description = description;
         this.term = term;
         this.price = price;
+        this.isActive = true;
     }
+
+    public boolean isActive() {return isActive;}
+
+    public void setActive(boolean active) {isActive = active;}
 
     public Integer getUserID() {return userID;}
 
