@@ -2,14 +2,8 @@ package com.cw.cwSpring.Controllers;
 
 import com.cw.cwSpring.Services.CustomUserDetails;
 import com.cw.cwSpring.Services.CustomUserDetailsService;
-import com.cw.cwSpring.models.Member;
-import com.cw.cwSpring.models.Tender;
-import com.cw.cwSpring.models.User;
-import com.cw.cwSpring.models.Winner;
-import com.cw.cwSpring.repo.MemberRepository;
-import com.cw.cwSpring.repo.TenderRepository;
-import com.cw.cwSpring.repo.UserRepository;
-import com.cw.cwSpring.repo.WinnerRepository;
+import com.cw.cwSpring.models.*;
+import com.cw.cwSpring.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,6 +26,8 @@ public class MainController {
     MemberRepository memberRepository;
     @Autowired
     WinnerRepository winnerRepository;
+    @Autowired
+    UserDataRepository userDataRepository;
 
     @GetMapping("/login")
     public String authorization(Model model) {
@@ -51,6 +47,15 @@ public class MainController {
     @GetMapping("/account")
     public String account(Model model) {
         //model.addAttribute("name", "Hello!");
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserData userData = new UserData();
+        if(userDataRepository.findUserDataByUserID(user.getID()) == null) {
+
+        }
+        else {
+            userData = userDataRepository.findUserDataByUserID(user.getID());
+        }
+        model.addAttribute("el",userData);
         return "account";
     }
     @GetMapping("/registration")
@@ -76,6 +81,22 @@ public class MainController {
         Tender tender = new Tender(name,description,term,price,user.getID());
         tenderRepository.save(tender);
         return "redirect:/myTenders";
+    }
+    @PostMapping("/saveUserData")
+    public String saveUserData(@RequestParam String phone, @RequestParam String address,@RequestParam String name,Model model) {
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserData userData = new UserData();
+        if(userDataRepository.findUserDataByUserID(user.getID()) == null) {
+            userData.userID = user.getID();
+        }
+        else {
+            userData = userDataRepository.findUserDataByUserID(user.getID());
+        }
+        userData.setName(name);
+        userData.setAddress(address);
+        userData.setPhone(phone);
+        userDataRepository.save(userData);
+        return "redirect:/account";
     }
     @GetMapping("/home")
     public String loadHomePage(Model model) {

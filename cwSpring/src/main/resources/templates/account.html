@@ -27,11 +27,23 @@
     </div>
 </header>
 <div class="main-page">
-    <div class="login">
-        <form class="form" th:action="@{/logout}" method="post">
+    <div class="login" th:each="el:${el}">
+        <form class="form" action="/saveUserData" method="post">
             <h1 class="form-title">Аккаунт</h1>
-            <button type="submit" class="form-button">Выйти</button>
-            <a class="form-button" href="/myTenders">Мои тендеры</a>
+            <div class="form-group">
+                <input type="text" name="phone" class="form-input" placeholder=" " th:value="${el.phone}">
+                <label class="form-label">Телефон:</label>
+            </div>
+            <div class="form-group">
+                <input type="text" name="address" class="form-input" placeholder=" " th:value="${el.address}">
+                <label class="form-label">Адрес:</label>
+            </div>
+            <div class="form-group">
+                <input type="text" name="name" class="form-input" placeholder=" " th:value="${el.name}">
+                <label class="form-label">Название организации:</label>
+            </div>
+            <button type="submit" class="form-button">Сохранить</button>
+            <a class="form-button" href="/logout">Выйти</a>
         </form>
     </div>
 </div>
