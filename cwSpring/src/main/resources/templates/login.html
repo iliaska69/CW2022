@@ -28,10 +28,10 @@
 </header>
 <div class="main-page">
     <div th:if="${param.error}">
-        Invalid username and password.
+        <h1 class="form-title">Invalid username and password.</h1>
     </div>
     <div th:if="${param.logout}">
-        You have been logged out.
+        <h1 class="form-title">You have been logged out.</h1>
     </div>
     <div class="login">
         <form class="form" th:action="@{/login}" method="post">

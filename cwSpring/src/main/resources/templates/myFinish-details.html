@@ -65,6 +65,38 @@
                 </tr>
             </div>
         </table>
+        <label class="form-label">Победитель: </label>
+        <table>
+            <tr>
+                <td>Индентификатор</td>
+                <td>Описание</td>
+                <td>Цена</td>
+                <td>Срок</td>
+            </tr>
+            <div th:each="els:${winner}">
+                <tr>
+                    <td th:text="${els.userID}"></td>
+                    <td th:text="${els.offerDescription}"></td>
+                    <td th:text="${els.offerPrice}"></td>
+                    <td th:text="${els.term}"></td>
+                </tr>
+            </div>
+        </table>
+        <label class="form-label">Контакты победителя: </label>
+        <table>
+            <tr>
+                <td>Компания</td>
+                <td>Телефон</td>
+                <td>Адрес</td>
+            </tr>
+            <div th:each="elss:${winnerData}">
+                <tr>
+                    <td th:text="${elss.name}"></td>
+                    <td th:text="${elss.phone}"></td>
+                    <td th:text="${elss.address}"></td>
+                </tr>
+            </div>
+        </table>
     </form>
 </div>
 </body>

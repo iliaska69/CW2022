@@ -9,6 +9,8 @@ public interface TenderRepository extends JpaRepository<Tender, Integer> {
     Tender findTenderById(Integer tenderID);
     Iterable<Tender> findTendersByIsActive(Boolean isActive);
     Iterable<Tender> findTendersByUserIDAndIsActive(Integer userID, Boolean isActive);
-    //@Query(value = "SELECT Tender FROM Tender WHERE Tender.id =? 1")
-    //Iterable<Tender> getIdCountryByName(Integer name);
+    @Query(value = "SELECT t FROM Tender t WHERE t.id =?1")
+    Tender getIdCountryByName(Integer id);
+    @Query(value = "SELECT t FROM Tender t WHERE t.id IN (SELECT m.tenderID FROM Member m WHERE m.userID =?1) AND t.isActive = true")
+    Iterable<Tender> getAllTenderByOfferUserID(Integer Userid);
 }

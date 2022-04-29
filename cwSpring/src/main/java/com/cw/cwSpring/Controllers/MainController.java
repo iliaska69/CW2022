@@ -66,9 +66,21 @@ public class MainController {
     @PostMapping("/registration")
     public String registrationForm(@RequestParam String login, @RequestParam String password,@RequestParam String passwordSecond,Model model) {
         String encodPass = new BCryptPasswordEncoder().encode(password);
-        User user = new User(login,encodPass);
-        userRepository.save(user);
-        return "login";
+        if(!password.equals(passwordSecond)) {
+            model.addAttribute("passNotEquals",true);
+            return "registration";
+        }
+        else {
+            if(userRepository.findByUsername(login)==null) {
+                User user = new User(login,encodPass);
+                userRepository.save(user);
+                return "login";
+            }
+            else {
+                model.addAttribute("userExist",true);
+                return "registration";
+            }
+        }
     }
     @GetMapping("/addTender")
     public String loadTenderPage(Model model) {
@@ -119,11 +131,17 @@ public class MainController {
         Iterable<Member> members = memberRepository.findMembersByTenderID(TenderId);
         model.addAttribute("members",members);
         model.addAttribute("tender",tenderArray);
+        Member member = memberRepository.getWinnerByTenderID(TenderId);
+        model.addAttribute("winner",member);
+        if(member!=null) {
+            model.addAttribute("winnerData",userDataRepository.findUserDataByUserID(member.getUserID()));
+        }
         return "myFinish-details";
     }
     @GetMapping("/myOffers")
     public String loadMyOffers(Model model) {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("tenders",tenderRepository.getAllTenderByOfferUserID(user.getID()));
         return "myOffers";
     }
     @GetMapping("/myTenders")
