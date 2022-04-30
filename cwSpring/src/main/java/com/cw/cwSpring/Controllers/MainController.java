@@ -63,8 +63,14 @@ public class MainController {
         //model.addAttribute("name", "Hello!");
         return "registration";
     }
+    @GetMapping("/admin")
+    public String adminPanel(Model model) {
+        model.addAttribute("users",userRepository.findAll());
+        model.addAttribute("userData",userDataRepository.findAll());
+        return "adminPage";
+    }
     @PostMapping("/registration")
-    public String registrationForm(@RequestParam String login, @RequestParam String password,@RequestParam String passwordSecond,Model model) {
+    public String registrationForm(@RequestParam String login, @RequestParam String password,@RequestParam String passwordSecond,@RequestParam String name,@RequestParam String phone,@RequestParam String address,Model model) {
         String encodPass = new BCryptPasswordEncoder().encode(password);
         if(!password.equals(passwordSecond)) {
             model.addAttribute("passNotEquals",true);
@@ -74,6 +80,8 @@ public class MainController {
             if(userRepository.findByUsername(login)==null) {
                 User user = new User(login,encodPass);
                 userRepository.save(user);
+                UserData userData = new UserData(user.getId(),phone,address,name);
+                userDataRepository.save(userData);
                 return "login";
             }
             else {
@@ -165,6 +173,35 @@ public class MainController {
     public String removeMyTender(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
         tenderRepository.deleteById(TenderId);
         return "redirect:/myTenders";
+    }
+    @GetMapping("/admin/changeStatus/{TenderId}")
+    public String ChangeUserStatus(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
+        User user = userRepository.findUserById(TenderId);
+        if(user.getRole() == null) {
+            user.setRole("User");
+        }
+        else {
+            if(user.getRole().equals("Admin")) {
+            }
+            else {
+                user.setRole(null);
+            }
+        }
+        userRepository.save(user);
+        return "redirect:/admin";
+    }
+    @GetMapping("/admin/removeUser/{TenderId}")
+    public String RemoveUser(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
+        User user = userRepository.findUserById(TenderId);
+        if(user.getRole()!=null) {
+            if(!user.getRole().equals("Admin")) {
+                userRepository.delete(user);
+            }
+        }
+        else {
+            userRepository.delete(user);
+        }
+        return "redirect:/admin";
     }
     @PostMapping("/takePart")
     public String addMember(@RequestParam Integer TenderID, @RequestParam String description,@RequestParam Integer term,@RequestParam Integer price,Model model) {

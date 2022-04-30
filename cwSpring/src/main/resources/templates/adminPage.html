@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Tender.by</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/templatemo-edu-meeting.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/tenderList.css}" />
+</head>
+<body>
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <a href="index.html" class="logo">
+                        Тендер.by
+                    </a>
+                    <ul class="nav">
+                        <li><a href="#top" class="active">Главная</a></li>
+                        <li><a href="/home">Тендеры</a></li>
+                        <li><a href="/addTender">Добавить тендер</a></li>
+                        <li><a href="/account">Аккаунт</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<body>
+<div class="showTender" th:each="el:${users}">
+    <form  method="post" class="form">
+        <div class="form-group">
+            <label class="form-label">Идентификатор: </label>
+            <label class="form-info" th:text="${el.id}"></label>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Логин: </label>
+            <label class="form-info" th:text="${el.username}"></label>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Роль: </label>
+            <label class="form-info" th:text="${el.role}"></label>
+        </div>
+        <div th:each="els:${userData}">
+            <div th:if="${el.id == els.userID}">
+                <div class="form-group">
+                    <label class="form-label">Название компании: </label>
+                    <label class="form-info" th:text="${els.name}"></label>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Адрес: </label>
+                    <label class="form-info" th:text="${els.address}"></label>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Телефон: </label>
+                    <label class="form-info" th:text="${els.phone}"></label>
+                </div>
+            </div>
+        </div>
+        <div th:if="${el.role}">
+            <a class="form-button" th:href="'/admin/changeStatus/'+${el.id}">Выключить аккаунт</a>
+        </div>
+        <div th:unless="${el.role}">
+            <a class="form-button" th:href="'/admin/changeStatus/'+${el.id}">Включить аккаунт</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
