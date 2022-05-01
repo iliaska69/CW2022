@@ -97,6 +97,9 @@
                 </tr>
             </div>
         </table>
+        <div th:if="${winnerData == null}">
+            <a class="form-button" th:href="'/myFinish/startAgain/'+${el.id}">Провести тендер еще раз</a>
+        </div>
     </form>
 </div>
 </body>

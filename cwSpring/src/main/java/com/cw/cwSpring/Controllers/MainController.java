@@ -42,12 +42,16 @@ public class MainController {
     }
     @GetMapping("/home/{TenderId}")
     public String tenderDetails(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<Tender> tender = tenderRepository.findById(TenderId);
         ArrayList<Tender> tenderArray = new ArrayList<>();
         tender.ifPresent(tenderArray::add);
         Iterable<Member> members = memberRepository.findMembersByTenderID(TenderId);
         model.addAttribute("members",members);
         model.addAttribute("tender",tenderArray);
+        if(memberRepository.findMembersByTenderIDAndUserID(TenderId,user.getID()).size() == 0) {
+            model.addAttribute("offerStatus",true);
+        }
         return "home-details";
     }
     @GetMapping("/account")
@@ -201,6 +205,15 @@ public class MainController {
         }
         return "myFinish-details";
     }
+    @GetMapping("/myFinish/startAgain/{TenderId}")
+    public String myFinishStartAgain(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
+        Tender tender = tenderRepository.findTenderById(TenderId);
+        if(tender!=null) {
+            tender.setActive(true);
+            tenderRepository.save(tender);
+        }
+        return "redirect:/home";
+    }
     @GetMapping("/myOffers")
     public String loadMyOffers(Model model) {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -228,6 +241,15 @@ public class MainController {
     public String removeMyTender(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
         tenderRepository.deleteById(TenderId);
         return "redirect:/myTenders";
+    }
+    @GetMapping("/home/removeOffer/{TenderId}")
+    public String removeMyOffer(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ArrayList<Member> member = memberRepository.findMembersByTenderIDAndUserID(TenderId,user.getID());
+        if(member.size() > 0) {
+            memberRepository.delete(member.get(0));
+        }
+        return "redirect:/home";
     }
     @GetMapping("/admin/changeStatus/{TenderId}")
     public String ChangeUserStatus(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
