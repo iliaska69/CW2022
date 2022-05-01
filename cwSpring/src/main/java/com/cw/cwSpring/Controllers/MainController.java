@@ -2,9 +2,13 @@ package com.cw.cwSpring.Controllers;
 
 import com.cw.cwSpring.Services.CustomUserDetails;
 import com.cw.cwSpring.Services.CustomUserDetailsService;
+import com.cw.cwSpring.Services.TenderSortService;
 import com.cw.cwSpring.models.*;
 import com.cw.cwSpring.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -13,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 @Controller
@@ -102,6 +108,36 @@ public class MainController {
         tenderRepository.save(tender);
         return "redirect:/myTenders";
     }
+    @PostMapping("/admin")
+    public String adminSort(@RequestParam String name, @RequestParam String status,Model model) {
+        Iterable<User> users;
+        if(!name.equals("")&&!status.equals("none")) {
+            if(status.equals("on")) {
+                users =userRepository.findUsersByUsernameAndRoleNotNull(name);
+            }
+            else {
+                users =userRepository.findUsersByUsernameAndRoleNull(name);
+            }
+        }
+        else if(!name.equals("")) {
+            users = userRepository.findUsersByUsername(name);
+        }
+        else if(!status.equals("none")) {
+            if(status.equals("on")) {
+                users =userRepository.findUsersByRoleNotNull();
+            }
+            else {
+                users =userRepository.findUsersByRoleNull();
+            }
+        }
+        else {
+            users = userRepository.findAll();
+        }
+                model.addAttribute("users",users);
+                model.addAttribute("userData",userDataRepository.findAll());
+                return "adminPage";
+
+        }
     @PostMapping("/saveUserData")
     public String saveUserData(@RequestParam String phone, @RequestParam String address,@RequestParam String name,Model model) {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -122,6 +158,25 @@ public class MainController {
     public String loadHomePage(Model model) {
         Iterable<Tender> tenders = tenderRepository.findTendersByIsActive(true);
         model.addAttribute("tenders",tenders);
+        return "home";
+    }
+    @PostMapping("/home")
+    public String tenderSort(@RequestParam String name, @RequestParam String status,@RequestParam Integer priceFrom,@RequestParam Integer priceTo, Model model) {
+        TenderSortService tenderSortService = new TenderSortService();
+        Iterable<Tender> tender = tenderRepository.findTendersByIsActive(true);
+        ArrayList<Tender> tenderArray = new ArrayList<>();
+        tender.forEach(tenderArray::add);
+        if(!status.equals("none")) {
+            if(status.equals("up")) {
+                tenderArray = tenderSortService.SortDesc(tenderArray);
+            }
+            else {
+                tenderArray = tenderSortService.SortAsc(tenderArray);
+            }
+        }
+        tenderArray = tenderSortService.SelectInPriceRange(tenderArray,priceFrom,priceTo);
+        tenderArray = tenderSortService.FindInArray(tenderArray,name);
+        model.addAttribute("tenders",tenderArray);
         return "home";
     }
     @GetMapping("/myFinish")

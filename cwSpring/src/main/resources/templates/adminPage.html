@@ -27,43 +27,62 @@
     </div>
 </header>
 <body>
-<div class="showTender" th:each="el:${users}">
-    <form  method="post" class="form">
-        <div class="form-group">
-            <label class="form-label">Идентификатор: </label>
-            <label class="form-info" th:text="${el.id}"></label>
-        </div>
-        <div class="form-group">
-            <label class="form-label">Логин: </label>
-            <label class="form-info" th:text="${el.username}"></label>
-        </div>
-        <div class="form-group">
-            <label class="form-label">Роль: </label>
-            <label class="form-info" th:text="${el.role}"></label>
-        </div>
-        <div th:each="els:${userData}">
-            <div th:if="${el.id == els.userID}">
-                <div class="form-group">
-                    <label class="form-label">Название компании: </label>
-                    <label class="form-info" th:text="${els.name}"></label>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Адрес: </label>
-                    <label class="form-info" th:text="${els.address}"></label>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Телефон: </label>
-                    <label class="form-info" th:text="${els.phone}"></label>
+<div class="main-page">
+    <div class="showTender">
+        <form action="/admin" method="post" class="form">
+            <h1 class="form-title">Поиск</h1>
+            <div class="form-group">
+                <input type="text" name="name" class="form-input" placeholder=" ">
+                <label class="form-label">Поиск по логину</label>
+            </div>
+            <div class="form-group">
+                <select name="status">
+                    <option selected value="none">Статус</option>
+                    <option value="on">Включенные</option>
+                    <option value="off">Выключенные</option>
+                </select>
+            </div>
+            <button type="submit" class="form-button">Поиск</button>
+        </form>
+    </div>
+    <div class="showTender" th:each="el:${users}">
+        <form  method="post" class="form">
+            <div class="form-group">
+                <label class="form-label">Идентификатор: </label>
+                <label class="form-info" th:text="${el.id}"></label>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Логин: </label>
+                <label class="form-info" th:text="${el.username}"></label>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Роль: </label>
+                <label class="form-info" th:text="${el.role}"></label>
+            </div>
+            <div th:each="els:${userData}">
+                <div th:if="${el.id == els.userID}">
+                    <div class="form-group">
+                        <label class="form-label">Название компании: </label>
+                        <label class="form-info" th:text="${els.name}"></label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Адрес: </label>
+                        <label class="form-info" th:text="${els.address}"></label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Телефон: </label>
+                        <label class="form-info" th:text="${els.phone}"></label>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div th:if="${el.role}">
-            <a class="form-button" th:href="'/admin/changeStatus/'+${el.id}">Выключить аккаунт</a>
-        </div>
-        <div th:unless="${el.role}">
-            <a class="form-button" th:href="'/admin/changeStatus/'+${el.id}">Включить аккаунт</a>
-        </div>
-    </form>
+            <div th:if="${el.role}">
+                <a class="form-button" th:href="'/admin/changeStatus/'+${el.id}">Выключить аккаунт</a>
+            </div>
+            <div th:unless="${el.role}">
+                <a class="form-button" th:href="'/admin/changeStatus/'+${el.id}">Включить аккаунт</a>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>
