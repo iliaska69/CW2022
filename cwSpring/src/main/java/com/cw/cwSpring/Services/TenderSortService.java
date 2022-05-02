@@ -20,6 +20,12 @@ public class TenderSortService {
         }
         return array;
     }
+    public ArrayList<Tender> Swap(ArrayList<Tender> array, Integer firstID, Integer secondID) {
+        Tender buffer = array.get(firstID);
+        array.set(firstID,array.get(secondID));
+        array.set(secondID,buffer);
+        return array;
+    }
     public ArrayList<Tender> SortDesc(ArrayList<Tender> array) {
         boolean needIteration = true;
         while (needIteration) {
