@@ -5,6 +5,7 @@
     <title>Tender.by</title>
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/templatemo-edu-meeting.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/loginForm.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/mainBlocks.css}" />
 </head>
 <body>
 <header class="header-area header-sticky">
@@ -43,7 +44,30 @@
                 <label class="form-label">Название организации:</label>
             </div>
             <button type="submit" class="form-button">Сохранить</button>
-            <a class="form-button" href="/logout">Выйти</a>
+            <div class="container-div">
+                <a class="custom-form-button" href="logout"><div class="custom-form-button-text">Выйти</div></a>
+            </div>
+            <div class="container-div" th:if="${isAdmin}">
+                <a class="custom-form-button" href="/admin"><div class="custom-form-button-text">Админ меню</div></a>
+            </div>
+        </form>
+    </div>
+    <div class="login">
+        <form class="form" action="/changeUserPass" method="post">
+            <h1 class="form-title">Пароль</h1>
+            <div class="form-group">
+                <input type="text" name="oldPass" class="form-input" placeholder=" ">
+                <label class="form-label">Старый пароль:</label>
+            </div>
+            <div class="form-group">
+                <input type="text" name="newPassFirst" class="form-input" placeholder=" ">
+                <label class="form-label">Новый пароль:</label>
+            </div>
+            <div class="form-group">
+                <input type="text" name="newPassSecond" class="form-input" placeholder=" ">
+                <label class="form-label">Новый пароль еще раз:</label>
+            </div>
+            <button type="submit" class="form-button">Сохранить</button>
         </form>
     </div>
 </div>

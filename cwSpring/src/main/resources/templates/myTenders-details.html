@@ -5,6 +5,7 @@
     <title>Tender.by</title>
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/templatemo-edu-meeting.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/tenderList.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/mainBlocks.css}" />
 </head>
 <body>
 <header class="header-area header-sticky">
@@ -27,47 +28,54 @@
     </div>
 </header>
 <body>
-<div class="showTender" th:each="el:${tender}">
-    <form  method="post" class="form">
-        <div class="form-group">
-            <label class="form-label">Идентификатор: </label>
-            <label class="form-info" th:text="${el.id}"></label>
-        </div>
-        <div class="form-group">
-            <label class="form-label">Название тендера: </label>
-            <label class="form-info" th:text="${el.name}"></label>
-        </div>
-        <div class="form-group">
-            <label class="form-label">Описание тендера: </label>
-            <label class="form-info" th:text="${el.description}"></label>
-        </div>
-        <div class="form-group">
-            <label class="form-label">Длительность тендера (деней): </label>
-            <label class="form-info" th:text="${el.term}"></label>
-        </div>
-        <div class="form-group">
-            <label class="form-label">Стоимость тендера (Бел. руб): </label>
-            <label class="form-info" th:text="${el.price}"></label>
-        </div>
-        <table>
-            <tr>
-                <td>Индентификатор</td>
-                <td>Описание</td>
-                <td>Цена</td>
-                <td>Срок</td>
-            </tr>
-            <div th:each="els:${members}">
-                <tr>
-                    <td th:text="${els.userID}"></td>
-                    <td th:text="${els.offerDescription}"></td>
-                    <td th:text="${els.offerPrice}"></td>
-                    <td th:text="${els.term}"></td>
-                </tr>
+<div class="main-container">
+    <div class="container-div" th:each="el:${tender}">
+        <form  method="post" class="form">
+            <div class="form-group">
+                <label class="form-label">Идентификатор: </label>
+                <label class="form-info" th:text="${el.id}"></label>
             </div>
-        </table>
-        <a class="form-button"  th:href="'/myTenders/finish/'+${el.id}">Закрыть тендер досрочно</a>
-        <a class="form-button"  th:href="'/myTenders/remove/'+${el.id}">Удалить тендер</a>
-    </form>
+            <div class="form-group">
+                <label class="form-label">Название тендера: </label>
+                <label class="form-info" th:text="${el.name}"></label>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Описание тендера: </label>
+                <label class="form-info" th:text="${el.description}"></label>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Длительность тендера (деней): </label>
+                <label class="form-info" th:text="${el.term}"></label>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Стоимость тендера (Бел. руб): </label>
+                <label class="form-info" th:text="${el.price}"></label>
+            </div>
+            <table>
+                <tr>
+                    <td>Индентификатор</td>
+                    <td>Описание</td>
+                    <td>Цена</td>
+                    <td>Срок</td>
+                </tr>
+                <div th:each="els:${members}">
+                    <tr>
+                        <td th:text="${els.userID}"></td>
+                        <td th:text="${els.offerDescription}"></td>
+                        <td th:text="${els.offerPrice}"></td>
+                        <td th:text="${els.term}"></td>
+                    </tr>
+                </div>
+            </table>
+            <div class="container-div">
+                <a class="custom-form-button"  th:href="'/myTenders/finish/'+${el.id}"><div class="custom-form-button-text">Закрыть тендер досрочно</div></a>
+            </div>
+            <div class="container-div">
+                <a class="custom-form-button"  th:href="'/myTenders/remove/'+${el.id}"><div class="custom-form-button-text">Удалить тендер</div></a>
+            </div>
+
+        </form>
+    </div>
 </div>
 </body>
 </html>

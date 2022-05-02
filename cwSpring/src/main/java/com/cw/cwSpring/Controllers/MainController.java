@@ -66,6 +66,9 @@ public class MainController {
             userData = userDataRepository.findUserDataByUserID(user.getID());
         }
         model.addAttribute("el",userData);
+        if(userRepository.findUserById(user.getID()).getRole().equals("Admin")) {
+            model.addAttribute("isAdmin",true);
+        }
         return "account";
     }
     @GetMapping("/registration")
@@ -158,6 +161,21 @@ public class MainController {
         userDataRepository.save(userData);
         return "redirect:/account";
     }
+    @PostMapping("/changeUserPass")
+    public String changeUserPass(@RequestParam String oldPass, @RequestParam String newPassFirst,@RequestParam String newPassSecond,Model model) {
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User dbUser = userRepository.findUserById(user.getID());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if(encoder.matches(oldPass,dbUser.getPassword())) {
+            if(newPassFirst.equals(newPassSecond)){
+                String newEncodedPass = new BCryptPasswordEncoder().encode(newPassFirst);
+                dbUser.setPassword(newEncodedPass);
+                userRepository.save(dbUser);
+                return "redirect:/logout";
+            }
+        }
+        return "redirect:/account";
+    }
     @GetMapping("/home")
     public String loadHomePage(Model model) {
         Iterable<Tender> tenders = tenderRepository.findTendersByIsActive(true);
@@ -190,6 +208,26 @@ public class MainController {
         model.addAttribute("tenders",tenders);
         return "myFinish";
     }
+    @PostMapping("/myFinish")
+    public String tenderMyFinishSort(@RequestParam String name, @RequestParam String status,@RequestParam Integer priceFrom,@RequestParam Integer priceTo, Model model) {
+        TenderSortService tenderSortService = new TenderSortService();
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Iterable<Tender> tender = tenderRepository.findTendersByUserIDAndIsActive(user.getID(),false);
+        ArrayList<Tender> tenderArray = new ArrayList<>();
+        tender.forEach(tenderArray::add);
+        if(!status.equals("none")) {
+            if(status.equals("up")) {
+                tenderArray = tenderSortService.SortDesc(tenderArray);
+            }
+            else {
+                tenderArray = tenderSortService.SortAsc(tenderArray);
+            }
+        }
+        tenderArray = tenderSortService.SelectInPriceRange(tenderArray,priceFrom,priceTo);
+        tenderArray = tenderSortService.FindInArray(tenderArray,name);
+        model.addAttribute("tenders",tenderArray);
+        return "myFinish";
+    }
     @GetMapping("/myFinish/{TenderId}")
     public String myFinishDetails(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
         Optional<Tender> tender = tenderRepository.findById(TenderId);
@@ -220,11 +258,51 @@ public class MainController {
         model.addAttribute("tenders",tenderRepository.getAllTenderByOfferUserID(user.getID()));
         return "myOffers";
     }
+    @PostMapping("/myOffers")
+    public String tenderMyOffersSort(@RequestParam String name, @RequestParam String status,@RequestParam Integer priceFrom,@RequestParam Integer priceTo, Model model) {
+        TenderSortService tenderSortService = new TenderSortService();
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Iterable<Tender> tender = tenderRepository.getAllTenderByOfferUserID(user.getID());
+        ArrayList<Tender> tenderArray = new ArrayList<>();
+        tender.forEach(tenderArray::add);
+        if(!status.equals("none")) {
+            if(status.equals("up")) {
+                tenderArray = tenderSortService.SortDesc(tenderArray);
+            }
+            else {
+                tenderArray = tenderSortService.SortAsc(tenderArray);
+            }
+        }
+        tenderArray = tenderSortService.SelectInPriceRange(tenderArray,priceFrom,priceTo);
+        tenderArray = tenderSortService.FindInArray(tenderArray,name);
+        model.addAttribute("tenders",tenderArray);
+        return "myOffers";
+    }
     @GetMapping("/myTenders")
     public String loadMyTendersPage(Model model) {
         CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Iterable<Tender> tenders = tenderRepository.findTendersByUserIDAndIsActive(user.getID(),true);
         model.addAttribute("tenders",tenders);
+        return "myTenders";
+    }
+    @PostMapping("/myTenders")
+    public String myTenderSort(@RequestParam String name, @RequestParam String status,@RequestParam Integer priceFrom,@RequestParam Integer priceTo, Model model) {
+        TenderSortService tenderSortService = new TenderSortService();
+        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Iterable<Tender> tender = tenderRepository.findTendersByUserIDAndIsActive(user.getID(),true);
+        ArrayList<Tender> tenderArray = new ArrayList<>();
+        tender.forEach(tenderArray::add);
+        if(!status.equals("none")) {
+            if(status.equals("up")) {
+                tenderArray = tenderSortService.SortDesc(tenderArray);
+            }
+            else {
+                tenderArray = tenderSortService.SortAsc(tenderArray);
+            }
+        }
+        tenderArray = tenderSortService.SelectInPriceRange(tenderArray,priceFrom,priceTo);
+        tenderArray = tenderSortService.FindInArray(tenderArray,name);
+        model.addAttribute("tenders",tenderArray);
         return "myTenders";
     }
     @GetMapping("/myTenders/{TenderId}")

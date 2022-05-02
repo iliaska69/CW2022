@@ -19,6 +19,24 @@ table{
     border: 1px solid darkorchid;
     box-shadow: 0 4px 16px #ccc;
 }
+.a-div-block{
+    width: 25%;
+    display: flex;
+}
+.a-div-button{
+    width: 90%;
+    text-align: center;
+    height: 35px;
+    border: none;
+    border-radius: 5px;
+    margin: auto;
+    color: white;
+    background-color: darkorchid;
+    cursor: pointer;
+}
+.a-div-button-text{
+    margin-top: 8px;
+}
 textarea {
     resize: none;
     height: 100px;

@@ -5,6 +5,7 @@
     <title>Tender.by</title>
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/templatemo-edu-meeting.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/tenderList.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/mainBlocks.css}" />
 </head>
 <body>
 <header class="header-area header-sticky">
@@ -27,8 +28,8 @@
     </div>
 </header>
 <body>
-<div class="main-page">
-    <div class="showTender">
+<div class="main-container">
+    <div class="container-div">
         <form action="/admin" method="post" class="form">
             <h1 class="form-title">Поиск</h1>
             <div class="form-group">
@@ -45,7 +46,7 @@
             <button type="submit" class="form-button">Поиск</button>
         </form>
     </div>
-    <div class="showTender" th:each="el:${users}">
+    <div class="container-div" th:each="el:${users}">
         <form  method="post" class="form">
             <div class="form-group">
                 <label class="form-label">Идентификатор: </label>
@@ -75,11 +76,11 @@
                     </div>
                 </div>
             </div>
-            <div th:if="${el.role}">
-                <a class="form-button" th:href="'/admin/changeStatus/'+${el.id}">Выключить аккаунт</a>
+            <div th:if="${el.role}" class="container-div">
+                <a class="custom-form-button" th:href="'/admin/changeStatus/'+${el.id}"><div class="custom-form-button-text">Выключить аккаунт</div></a>
             </div>
-            <div th:unless="${el.role}">
-                <a class="form-button" th:href="'/admin/changeStatus/'+${el.id}">Включить аккаунт</a>
+            <div th:unless="${el.role}" class="container-div">
+                <a class="custom-form-button" th:href="'/admin/changeStatus/'+${el.id}"><div class="custom-form-button-text">Включить аккаунт</div></a>
             </div>
         </form>
     </div>
