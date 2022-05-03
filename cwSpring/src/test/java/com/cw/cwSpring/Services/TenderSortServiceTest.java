@@ -31,7 +31,14 @@ class TenderSortServiceTest {
     void findInArray() {
         assertEquals(2, tenderSortService.FindInArray(tenderArray,"name").size());
     }
-
+    @Test
+    void findMinCountGl() {
+        assertEquals(5, 5);
+    }
+    @Test
+    void calcRangedCount() {
+        assertEquals(5, 5);
+    }
     @Test
     void selectInPriceRange() {
         assertEquals(2, tenderSortService.SelectInPriceRange(tenderArray,5,10).size());

@@ -315,6 +315,29 @@ public class MainController {
         model.addAttribute("tender",tenderArray);
         return "myTenders-details";
     }
+    @GetMapping("/myTenders/selectWinner/{TenderId}")
+    public String myTenderFinish(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
+        Optional<Tender> tender = tenderRepository.findById(TenderId);
+        ArrayList<Tender> tenderArray = new ArrayList<>();
+        tender.ifPresent(tenderArray::add);
+        Iterable<Member> members = memberRepository.findMembersByTenderID(TenderId);
+        Member bestMember = new Member();
+        for(Member item : members)
+        {
+            if(bestMember.getOfferPrice() != null) {
+                if(bestMember.getOfferPrice() > item.getOfferPrice()) {
+                    bestMember = item;
+                }
+            }
+            else {
+                bestMember = item;
+            }
+        }
+        model.addAttribute("winner",bestMember);
+        model.addAttribute("members",members);
+        model.addAttribute("tender",tenderArray);
+        return "selectWinner";
+    }
     @GetMapping("/myTenders/remove/{TenderId}")
     public String removeMyTender(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
         tenderRepository.deleteById(TenderId);
@@ -367,6 +390,26 @@ public class MainController {
         }
         return "redirect:/home";
     }
+    @PostMapping("/myTenders/selectWinner/{TenderId}")
+    public String finishByUser(@RequestParam Integer TenderID, @RequestParam Integer winnerID,Model model) {
+
+
+        Iterable<Member> members = memberRepository.findMembersByTenderID(TenderID);
+        Member bestMember = new Member();
+        for(Member item : members)
+        {
+            if(item.getUserID() == winnerID) {
+                Tender tender = tenderRepository.findTenderById(TenderID);
+                tender.setActive(false);
+                tenderRepository.save(tender);
+
+                Winner winner = new Winner();
+                winner.setMemberID(item.getId());
+                winnerRepository.save(winner);
+            }
+        }
+        return "redirect:/home";
+    }
     @GetMapping("/myTenders/finish/{TenderId}")
     public String finishMyTender(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
         Tender tender = tenderRepository.findTenderById(TenderId);
@@ -388,6 +431,13 @@ public class MainController {
         Winner winner = new Winner();
         winner.setMemberID(bestMember.getId());
         winnerRepository.save(winner);
+        return "redirect:/myTenders";
+    }
+    @GetMapping("/myTenders/finishNone/{TenderId}")
+    public String finishMyTenderNone(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
+        Tender tender = tenderRepository.findTenderById(TenderId);
+        tender.setActive(false);
+        tenderRepository.save(tender);
         return "redirect:/myTenders";
     }
 }

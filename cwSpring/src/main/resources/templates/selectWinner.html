@@ -67,13 +67,42 @@
                     </tr>
                 </div>
             </table>
-            <div class="container-div">
-                <a class="custom-form-button"  th:href="'/myTenders/selectWinner/'+${el.id}"><div class="custom-form-button-text">Закрыть тендер</div></a>
+        </form>
+    </div>
+    <div class="container-div" th:each="el:${tender}">
+        <form  method="post" class="form">
+            <label class="form-label">Лучший участник: </label>
+            <table>
+                <tr>
+                    <td>Индентификатор</td>
+                    <td>Описание</td>
+                    <td>Цена</td>
+                    <td>Срок</td>
+                </tr>
+                <div th:each="els:${winner}">
+                    <tr>
+                        <td th:text="${els.userID}"></td>
+                        <td th:text="${els.offerDescription}"></td>
+                        <td th:text="${els.offerPrice}"></td>
+                        <td th:text="${els.term}"></td>
+                    </tr>
+                </div>
+            </table>
+            <div class="form-group">
+                <input type="text" name="TenderID" class="form-input" placeholder=" " th:value="${el.id}" readonly="readonly">
+                <label class="form-label">Идентификатор тендера</label>
+            </div>
+            <div class="form-group" th:if="${members}">
+                <input type="number" name="winnerID" class="form-input" required placeholder=" ">
+                <label class="form-label">ID победителя:</label>
+            </div>
+            <button type="submit" class="form-button" th:if="${members}">Выбрать участника</button>
+            <div class="container-div" th:if="${members}">
+                <a class="custom-form-button"  th:href="'/myTenders/finish/'+${el.id}"><div class="custom-form-button-text">Выбрать лучшего участника</div></a>
             </div>
             <div class="container-div">
-                <a class="custom-form-button"  th:href="'/myTenders/remove/'+${el.id}"><div class="custom-form-button-text">Удалить тендер</div></a>
+                <a class="custom-form-button"  th:href="'/myTenders/finishNone/'+${el.id}"><div class="custom-form-button-text">Закрыть тендер без участника</div></a>
             </div>
-
         </form>
     </div>
 </div>
