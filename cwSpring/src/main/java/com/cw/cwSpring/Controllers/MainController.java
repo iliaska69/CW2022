@@ -76,12 +76,6 @@ public class MainController {
         //model.addAttribute("name", "Hello!");
         return "registration";
     }
-    @GetMapping("/admin")
-    public String adminPanel(Model model) {
-        model.addAttribute("users",userRepository.findAll());
-        model.addAttribute("userData",userDataRepository.findAll());
-        return "adminPage";
-    }
     @PostMapping("/registration")
     public String registrationForm(@RequestParam String login, @RequestParam String password,@RequestParam String passwordSecond,@RequestParam String name,@RequestParam String phone,@RequestParam String address,Model model) {
         String encodPass = new BCryptPasswordEncoder().encode(password);
@@ -102,18 +96,6 @@ public class MainController {
                 return "registration";
             }
         }
-    }
-    @GetMapping("/addTender")
-    public String loadTenderPage(Model model) {
-        //model.addAttribute("name", "Hello!");
-        return "addTender";
-    }
-    @PostMapping("/addTender")
-    public String addTender(@RequestParam String name, @RequestParam String description,@RequestParam Integer term,@RequestParam Integer price,Model model) {
-        CustomUserDetails user = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Tender tender = new Tender(name,description,term,price,user.getID());
-        tenderRepository.save(tender);
-        return "redirect:/myTenders";
     }
     @PostMapping("/admin")
     public String adminSort(@RequestParam String name, @RequestParam String status,Model model) {
@@ -175,31 +157,6 @@ public class MainController {
             }
         }
         return "redirect:/account";
-    }
-    @GetMapping("/home")
-    public String loadHomePage(Model model) {
-        Iterable<Tender> tenders = tenderRepository.findTendersByIsActive(true);
-        model.addAttribute("tenders",tenders);
-        return "home";
-    }
-    @PostMapping("/home")
-    public String tenderSort(@RequestParam String name, @RequestParam String status,@RequestParam Integer priceFrom,@RequestParam Integer priceTo, Model model) {
-        TenderSortService tenderSortService = new TenderSortService();
-        Iterable<Tender> tender = tenderRepository.findTendersByIsActive(true);
-        ArrayList<Tender> tenderArray = new ArrayList<>();
-        tender.forEach(tenderArray::add);
-        if(!status.equals("none")) {
-            if(status.equals("up")) {
-                tenderArray = tenderSortService.SortDesc(tenderArray);
-            }
-            else {
-                tenderArray = tenderSortService.SortAsc(tenderArray);
-            }
-        }
-        tenderArray = tenderSortService.SelectInPriceRange(tenderArray,priceFrom,priceTo);
-        tenderArray = tenderSortService.FindInArray(tenderArray,name);
-        model.addAttribute("tenders",tenderArray);
-        return "home";
     }
     @GetMapping("/myFinish")
     public String myFinishPage(Model model) {
