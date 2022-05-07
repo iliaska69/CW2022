@@ -1,0 +1,6 @@
+package com.cw.cwSpring.Iterator;
+
+public interface Iterator {
+    public boolean hasNext();
+    public Object next();
+}

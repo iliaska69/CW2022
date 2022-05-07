@@ -1,15 +1,14 @@
 package com.cw.cwSpring.models;
 
+import com.cw.cwSpring.models.Base.EntityBase;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+public class User extends EntityBase {
     private String username;
     private String password;
     private String role;
@@ -26,14 +25,6 @@ public class User {
     public String getRole() {return role;}
 
     public void setRole(String role) {this.role = role;}
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -62,7 +53,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + getId() +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +

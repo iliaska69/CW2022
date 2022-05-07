@@ -1,15 +1,14 @@
 package com.cw.cwSpring.models;
 
+import com.cw.cwSpring.models.Base.EntityBase;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Winner {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+public class Winner extends EntityBase {
     private Integer userID;
     private Integer memberID;
 
@@ -17,20 +16,11 @@ public class Winner {
     }
 
 
-    public Winner(Integer id, Integer userID, Integer memberID) {
-        this.id = id;
+    public Winner(Integer userID, Integer memberID) {
         this.userID = userID;
         this.memberID = memberID;
     }
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Integer getUserID() {
         return userID;

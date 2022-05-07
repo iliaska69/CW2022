@@ -57,6 +57,7 @@
                     <td>Описание</td>
                     <td>Цена</td>
                     <td>Срок</td>
+                    <td>Рейтинг</td>
                 </tr>
                 <div th:each="els:${members}">
                     <tr>
@@ -64,6 +65,11 @@
                         <td th:text="${els.offerDescription}"></td>
                         <td th:text="${els.offerPrice}"></td>
                         <td th:text="${els.term}"></td>
+                        <div th:each="elsi:${dataContainer}">
+                            <div th:if="${els.id == elsi.member.id}">
+                                <td th:text="${elsi.getZRating()}"></td>
+                            </div>
+                        </div>
                     </tr>
                 </div>
             </table>
@@ -78,6 +84,7 @@
                     <td>Описание</td>
                     <td>Цена</td>
                     <td>Срок</td>
+                    <td>Рейтинг</td>
                 </tr>
                 <div th:each="els:${winner}">
                     <tr>
@@ -85,6 +92,11 @@
                         <td th:text="${els.offerDescription}"></td>
                         <td th:text="${els.offerPrice}"></td>
                         <td th:text="${els.term}"></td>
+                        <div th:each="elsi:${dataContainer}">
+                            <div th:if="${els.id == elsi.member.id}">
+                                <td th:text="${elsi.getZRating()}"></td>
+                            </div>
+                        </div>
                     </tr>
                 </div>
             </table>

@@ -278,9 +278,13 @@ public class MainController {
         ArrayList<Tender> tenderArray = new ArrayList<>();
         tender.ifPresent(tenderArray::add);
         Iterable<Member> members = memberRepository.findMembersByTenderID(TenderId);
+        ArrayList<MemberDataContainer> memberDataContainers = new ArrayList<>();
         Member bestMember = new Member();
         for(Member item : members)
         {
+            Float rating = 100/(item.getOfferPrice().floatValue()/5);
+            MemberDataContainer memberDataContainer = new MemberDataContainer(item,new String[]{(rating).toString()+"%"});
+            memberDataContainers.add(memberDataContainer);
             if(bestMember.getOfferPrice() != null) {
                 if(bestMember.getOfferPrice() > item.getOfferPrice()) {
                     bestMember = item;
@@ -290,6 +294,7 @@ public class MainController {
                 bestMember = item;
             }
         }
+        model.addAttribute("dataContainer",memberDataContainers);
         model.addAttribute("winner",bestMember);
         model.addAttribute("members",members);
         model.addAttribute("tender",tenderArray);
@@ -323,19 +328,6 @@ public class MainController {
             }
         }
         userRepository.save(user);
-        return "redirect:/admin";
-    }
-    @GetMapping("/admin/removeUser/{TenderId}")
-    public String RemoveUser(@PathVariable(value = "TenderId") Integer TenderId, Model model) {
-        User user = userRepository.findUserById(TenderId);
-        if(user.getRole()!=null) {
-            if(!user.getRole().equals("Admin")) {
-                userRepository.delete(user);
-            }
-        }
-        else {
-            userRepository.delete(user);
-        }
         return "redirect:/admin";
     }
     @PostMapping("/takePart")

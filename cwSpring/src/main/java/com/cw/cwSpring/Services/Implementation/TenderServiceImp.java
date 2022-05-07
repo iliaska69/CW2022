@@ -3,6 +3,7 @@ package com.cw.cwSpring.Services.Implementation;
 import com.cw.cwSpring.Services.CustomUserDetails;
 import com.cw.cwSpring.Services.Interfaces.TenderService;
 import com.cw.cwSpring.Services.TenderSortService;
+import com.cw.cwSpring.Single.DataLogger;
 import com.cw.cwSpring.models.Tender;
 import com.cw.cwSpring.repo.TenderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +41,12 @@ public class TenderServiceImp implements TenderService {
                 tenderArray = tenderSortService.SortDesc(tenderArray);
             }
             else {
-                tenderArray = tenderSortService.SortAsc(tenderArray);
+                tenderArray = tenderSortService.SortAsc(tender);
             }
         }
         tenderArray = tenderSortService.SelectInPriceRange(tenderArray,priceFrom,priceTo);
         tenderArray = tenderSortService.FindInArray(tenderArray,name);
+        DataLogger.getInstance().LogData(1,"GetAllData");
         return tenderArray;
     }
 }
